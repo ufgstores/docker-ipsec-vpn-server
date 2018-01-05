@@ -109,6 +109,10 @@ XAUTH_POOL=${VPN_XAUTH_POOL:-'192.168.43.10-192.168.43.250'}
 DNS_SRV1=${VPN_DNS_SRV1:-'8.8.8.8'}
 DNS_SRV2=${VPN_DNS_SRV2:-'8.8.4.4'}
 
+if [ "$VPN_USE_DOCKER_DNS" = "yes" ]; then
+  DNS_SRV1="$L2TP_LOCAL"
+fi
+
 # Create IPsec (Libreswan) config
 cat > /etc/ipsec.conf <<EOF
 version 2.0
@@ -285,6 +289,10 @@ modprobe af_key
 # Start services
 mkdir -p /var/run/pluto /var/run/xl2tpd
 rm -f /var/run/pluto/pluto.pid /var/run/xl2tpd.pid
+
+if [ "$VPN_USE_DOCKER_DNS" = "yes" ]; then
+  /usr/sbin/dnsmasq
+fi
 
 /usr/local/sbin/ipsec start --config /etc/ipsec.conf
 exec /usr/sbin/xl2tpd -D -c /etc/xl2tpd/xl2tpd.conf
