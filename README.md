@@ -32,7 +32,7 @@ First, [install and run Docker](https://docs.docker.com/engine/installation/) on
 Get the trusted build from the [Docker Hub registry](https://hub.docker.com/r/hwdsl2/ipsec-vpn-server/):
 
 ```
-docker pull hwdsl2/ipsec-vpn-server
+docker pull kurmisrainas/ipsec-vpn-server
 ```
 
 Alternatively, you may [build from source code](https://github.com/hwdsl2/docker-ipsec-vpn-server#build-from-source-code) on GitHub.
@@ -41,19 +41,15 @@ Alternatively, you may [build from source code](https://github.com/hwdsl2/docker
 
 ### Environment variables
 
-This Docker image uses the following three variables, that can be declared in an `env` file ([example](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/vpn.env.example)):
+This Docker image uses the following three variables, that can be declared in an `env` file ([example](https://github.com/laurynas/docker-ipsec-vpn-server/blob/master/vpn.env.example)):
 
 ```
 VPN_IPSEC_PSK=your_ipsec_pre_shared_key
-VPN_USER=your_vpn_username
-VPN_PASSWORD=your_vpn_password
+VPN_USER_CREDENTIAL_LIST=[{"login":"userTest1","password":"test1"},{"login":"userTest2","password":"test2"}]
+VPN_USE_DOCKER_DNS=yes
 ```
 
-This will create a user account for VPN login, which can be used by your multiple devices[*](https://github.com/hwdsl2/docker-ipsec-vpn-server#multi-device-note) . The IPsec PSK (pre-shared key) is specified by the `VPN_IPSEC_PSK` environment variable. The VPN username is defined in `VPN_USER`, and VPN password is specified by `VPN_PASSWORD`.
-
-**Note:** In your `env` file, DO NOT put `""` or `''` around values, or add space around `=`. DO NOT use these special characters within values: `\ " '`.
-
-All the variables to this image are optional, which means you don't have to type in any environment variable, and you can have an IPsec VPN server out of the box! Read the sections below for details.
+Multi-user implementation is based on [François COJEAN fork](https://github.com/fcojean/l2tp-ipsec-vpn-server).
 
 ### Start the IPsec VPN server
 
@@ -92,14 +88,8 @@ Connect to your new VPN with these details:
 
 Server IP: your_vpn_server_ip
 IPsec PSK: your_ipsec_pre_shared_key
-Username: your_vpn_username
-Password: your_vpn_password
-```
-
-(Optional) Backup the generated VPN login details (if any) to the current directory:
-
-```
-docker cp ipsec-vpn-server:/opt/src/vpn-gen.env ./
+Login : user1 Password : password1
+Login : user2 Password : password2
 ```
 
 ### Check server status
